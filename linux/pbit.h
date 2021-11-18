@@ -37,5 +37,6 @@ int pbit_infer(struct pbit *pc);
 #define PBIT_RET(pc) return pbit_infer(&pc)
 #define PBIT_Y(pc,x) pbit_check_yes(&pc,x)
 #define PBIT_N(pc,x) pbit_check_no(&pc,x)
+#define PBIT_RECOVER(pc) pbit_check_recover(&pc)
 
 #endif

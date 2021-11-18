@@ -79,16 +79,16 @@ int pbit_check(struct pbit *pc)
 		return PBIT_ERR;
 	pc_copy = *pc;
 	if (pc_copy.status == pc_copy.dead && pc_copy.ls == PBIT_YES
-		&& pc_copy.ms == PBIT_YES && pc_copy.rs == PBIT_YES
-		&& pc_copy.status != PBIT_ERR && pc_copy.status == PBIT_MGK
-		&& pc_copy.ev1 == pc_copy.ev2 && pc_copy.ev1 == pc_copy.ev3) {
+	    && pc_copy.ms == PBIT_YES && pc_copy.rs == PBIT_YES
+	    && pc_copy.status != PBIT_ERR && pc_copy.status == PBIT_MGK
+	    && pc_copy.ev1 == pc_copy.ev2 && pc_copy.ev1 == pc_copy.ev3) {
 		*pc = pc_copy;
 		return PBIT_YES;
 	}
 	else if (pc_copy.status == PBIT_DST && pc_copy.dead == PBIT_DED
-			 && pc_copy.ls == PBIT_NO && pc_copy.ms == PBIT_NO
-			 && pc_copy.rs == PBIT_NO && pc_copy.ev1 == pc_copy.ev2
-			 && pc_copy.ev1 == pc_copy.ev3) {
+		 && pc_copy.ls == PBIT_NO && pc_copy.ms == PBIT_NO
+		 && pc_copy.rs == PBIT_NO && pc_copy.ev1 == pc_copy.ev2
+		 && pc_copy.ev1 == pc_copy.ev3) {
 		*pc = pc_copy;
 		return PBIT_NO;
 	}
@@ -96,6 +96,10 @@ int pbit_check(struct pbit *pc)
 	return PBIT_ERR;
 }
 
+/*
+ * Infer the value out of the pbit, failure is always -EINVAL
+ * @pc: paranoid bit
+ */
 int pbit_infer(struct pbit *pc)
 {
 	struct pbit pc_copy;
@@ -109,4 +113,23 @@ int pbit_infer(struct pbit *pc)
 		return pc_copy.ev2;
 		break;
 	}
+}
+
+/*
+ * Attempt to recover the value, sets pbit value to PBIT_ERR
+ * @pc: paranoid bit
+ */
+void pbit_check_recover(struct pbit *pc)
+{
+	struct pbit pc_copy;
+	pc_copy = *pc;
+	if (pc_copy.ev1 == pc_copy.ev2 && pc_copy.ev3 == pc_copy.ev1)
+		pbit_check_setup(&pc_copy, pc_copy.ev1);
+	else if (pc_copy.ev1 == pc_copy.ev2 || pc_copy.ev1 == pc_copy.ev3)
+		pbit_check_setup(&pc_copy, pc_copy.ev1);
+	else if (pc_copy.ev2 == pc_copy.ev3)
+		pbit_check_setup(&pc_copy, pc_copy.ev3);
+	else
+		pbit_check_setup(&pc_copy, -EINVAL);
+	*pc = pc_copy;
 }
