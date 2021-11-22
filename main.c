@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
 		   pc.ms, pc.ev3, pc.dead, pc.ls);
 
 	pbit_check_setup(&pc, 65535);
-	pbit_check_yes(&pc, 65535);
+	pbit_check_yes(&pc, 65535, NULL);
 	num_hits = 0;
 	num_fails = 0;
 	setbuf(stdout, NULL);
@@ -188,7 +188,7 @@ int main(int argc, char *argv[]) {
 	//printf("Num Hits:%d\n", num_hits);
 	//printf("Num Fail:%d\n", num_fails);
 
-	PBIT_Y(pc,1);
+	PBIT_Y(pc,1,NULL);
 	assert(pbit_check(&pc) == PBIT_YES);
 	assert(PBIT_GET(pc) == 1);
 	//printf("PBV:%d,%d\n", pbit_check(&pc), PBIT_GET(pc));
@@ -201,7 +201,7 @@ int main(int argc, char *argv[]) {
 	assert(PBIT_OK(pc) == 0);
 	assert(PBIT_FAIL(pc) == 1);
 
-	PBIT_Y(pc,100);
+	PBIT_Y(pc, 100, NULL);
 	assert(PBIT_OK(pc) == 1);
 	assert(PBIT_FAIL(pc) == 0);
 
@@ -214,7 +214,12 @@ int main(int argc, char *argv[]) {
 	assert(pbit_check(&pc) == PBIT_ERR);
 	//printf("PBS:%d\n", PBIT_OK(pc));
 	//printf("PBS:%d\n", PBIT_FAIL(pc));
-	PBIT_Y(pc,100);
+
+
+
+	PBIT_Y(pc,100,NULL);
+	printf("PBIT GET: %d\n", PBIT_GET((*(struct pbit *)&pc.rs)));
+	printf("PBIT ev2: %d\n", (*(struct pbit *)&pc.rs).ev2);
 	PBIT_RET(pc);
 	//printf("X\n");
 }

@@ -26,7 +26,7 @@ struct pbit {
 
 void pbit_check_no(struct pbit *pc, int ev);
 void pbit_check_setup(struct pbit *pc, int ev);
-void pbit_check_yes(struct pbit *pc, int ev);
+void pbit_check_yes(struct pbit *pc, int ev, const int *rv);
 int pbit_check(struct pbit *pc);
 int pbit_infer(struct pbit *pc);
 
@@ -35,8 +35,10 @@ int pbit_infer(struct pbit *pc);
 #define PBIT_DEAD(pc) (pbit_check(&pc) == PBIT_ERR ? 1 : 0)
 #define PBIT_GET(pc) (pbit_infer(&pc))
 #define PBIT_RET(pc) return pbit_infer(&pc)
-#define PBIT_Y(pc,x) pbit_check_yes(&pc,x)
+#define PBIT_Y(pc,x,y) pbit_check_yes(&pc,x,y)
 #define PBIT_N(pc,x) pbit_check_no(&pc,x)
 #define PBIT_RECOVER(pc) pbit_check_recover(&pc)
 
+//#define PBIT(pc) *(struct pbit *)(&(int)pc)
+//#define PVAL(pc) ((int)pc)
 #endif

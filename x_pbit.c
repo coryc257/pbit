@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0
 #include "linux/pbit.h"
-#include <errno.h>
 
 /*
  * Copyright Cory Craig <gs.cory.craig@gmail.com> 2021
@@ -53,11 +52,14 @@ void pbit_check_setup(struct pbit *pc, int ev)
  * Set the status to YES
  * @pc: paranoid bit
  */
-void pbit_check_yes(struct pbit *pc, int ev)
+void pbit_check_yes(struct pbit *pc, int ev, const int *rv)
 {
 	if (!pc)
 		return;
-	pc->dead = PBIT_MGK;
+	if(rv)
+		pc->dead = *rv;
+	else
+		pc->dead = PBIT_MGK;
 	pc->status = pc->dead;
 	pc->ls = PBIT_YES;
 	pc->ms = PBIT_YES;
@@ -80,8 +82,8 @@ int pbit_check(struct pbit *pc)
 	pc_copy = *pc;
 	if (pc_copy.status == pc_copy.dead && pc_copy.ls == PBIT_YES
 	    && pc_copy.ms == PBIT_YES && pc_copy.rs == PBIT_YES
-	    && pc_copy.status != PBIT_ERR && pc_copy.status == PBIT_MGK
-	    && pc_copy.ev1 == pc_copy.ev2 && pc_copy.ev1 == pc_copy.ev3) {
+	    && pc_copy.status != PBIT_ERR && pc_copy.ev1 == pc_copy.ev2
+	    && pc_copy.ev1 == pc_copy.ev3) {
 		*pc = pc_copy;
 		return PBIT_YES;
 	}
@@ -106,7 +108,7 @@ int pbit_infer(struct pbit *pc)
 	pc_copy = *pc;
 	switch(pbit_check(&pc_copy)) {
 	case PBIT_ERR:
-		return -EINVAL;
+		return PBIT_ERR;
 		break;
 	default:
 		*pc = pc_copy;
@@ -130,6 +132,6 @@ void pbit_check_recover(struct pbit *pc)
 	else if (pc_copy.ev2 == pc_copy.ev3)
 		pbit_check_setup(&pc_copy, pc_copy.ev3);
 	else
-		pbit_check_setup(&pc_copy, -EINVAL);
+		pbit_check_setup(&pc_copy, PBIT_ERR);
 	*pc = pc_copy;
 }
