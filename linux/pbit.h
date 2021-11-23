@@ -2,6 +2,7 @@
 #ifndef _XLINUX_PBIT_H
 #define _XLINUX_PBIT_H
 
+#include <linux/random.h>
 /*
  * Tamper Resistant "Paranoid Bit"
  */
@@ -35,7 +36,11 @@ int pbit_infer(struct pbit *pc);
 #define PBIT_DEAD(pc) (pbit_check(&pc) == PBIT_ERR ? 1 : 0)
 #define PBIT_GET(pc) (pbit_infer(&pc))
 #define PBIT_RET(pc) return pbit_infer(&pc)
-#define PBIT_Y(pc,x,y) pbit_check_yes(&pc,x,y)
+#define PBIT_Y(pc,x) do {\
+	int __PBIT_RV_VAL;\
+	get_random_bytes(&__PBIT_RV_VAL, sizeof(int));\
+	pbit_check_yes(&pc, x, &__PBIT_RV_VAL);\
+} while (0)
 #define PBIT_N(pc,x) pbit_check_no(&pc,x)
 #define PBIT_RECOVER(pc) pbit_check_recover(&pc)
 

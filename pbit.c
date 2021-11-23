@@ -30,6 +30,7 @@ void pbit_check_no(struct pbit *pc, int ev)
 	pc->ev2 = ev;
 	pc->ev3 = ev;
 }
+EXPORT_SYMBOL(pbit_check_no);
 /*
  * Initialize the state to ERR
  * @pc: paranoid bit
@@ -47,6 +48,7 @@ void pbit_check_setup(struct pbit *pc, int ev)
 	pc->ev2 = ev;
 	pc->ev3 = ev;
 }
+EXPORT_SYMBOL(pbit_check_setup);
 
 /*
  * Set the status to YES
@@ -68,6 +70,7 @@ void pbit_check_yes(struct pbit *pc, int ev, const int *rv)
 	pc->ev2 = ev;
 	pc->ev3 = ev;
 }
+EXPORT_SYMBOL(pbit_check_yes);
 
 /*
  * Check current status of paranoid bit, any alterations since a set status
@@ -97,6 +100,7 @@ int pbit_check(struct pbit *pc)
 	*pc = pc_copy;
 	return PBIT_ERR;
 }
+EXPORT_SYMBOL(pbit_check);
 
 /*
  * Infer the value out of the pbit, failure is always -EINVAL
@@ -116,6 +120,7 @@ int pbit_infer(struct pbit *pc)
 		break;
 	}
 }
+EXPORT_SYMBOL(pbit_infer);
 
 /*
  * Attempt to recover the value, sets pbit value to PBIT_ERR
@@ -135,3 +140,4 @@ void pbit_check_recover(struct pbit *pc)
 		pbit_check_setup(&pc_copy, PBIT_ERR);
 	*pc = pc_copy;
 }
+EXPORT_SYMBOL(pbit_check_recover);
